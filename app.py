@@ -5,7 +5,7 @@ import json
 app = Flask(__name__)
 
 # Загружаем рецепты
-with open('recipes.json', 'r', encoding='utf-8') as f:
+with open('recipes (en).json', 'r', encoding='utf-8') as f:
     RECIPES = json.load(f)
 
 # Собираем уникальные ингредиенты
@@ -16,24 +16,24 @@ for recipe in RECIPES:
 
 # Группируем по категориям
 categories = {
-    "🥬 Овощи, зелень": [],
-    "🥛 Молочные, яйца": [],
-    "🍗 Мясо, колбаса": [],
-    "🌾 Мука, крупы, бакалея": [],
-    "🧂 Специи, масло, прочее": []
+    "🥬 Vegetables, greens": [],
+    "🥛 Dairy, eggs": [],
+    "🍗 Meat, sausage, chicken, fish": [],
+    "🌾 Flour, cereals, groceries": [],
+    "🧂 Spices, oil, etc.": []
 }
 
 for ing in sorted(all_ingredients):
-    if any(x in ing for x in ['кабачк', 'помидор', 'картошк', 'лук', 'морков', 'капуст', 'перец', 'яблок', 'чеснок', 'зелень', 'петрушк', 'укроп', 'кабачки']):
-        categories["🥬 Овощи, зелень"].append(ing)
-    elif any(x in ing for x in ['яйц', 'молоко', 'творог', 'сметан', 'сыр', 'масло сливоч', 'кефир']):
-        categories["🥛 Молочные, яйца"].append(ing)
-    elif any(x in ing for x in ['колбас', 'курин', 'курица', 'фарш', 'бекон', 'сосиск']):
-        categories["🍗 Мясо, колбаса"].append(ing)
-    elif any(x in ing for x in ['мука', 'сахар', 'рис', 'гречк', 'макарон', 'манк', 'разрыхлитель', 'сода', 'ванилин', 'дрожжи', 'пшеничная']):
-        categories["🌾 Мука, крупы, бакалея"].append(ing)
+    if any(x in ing.lower() for x in ['zucchini', 'tomato', 'potato', 'onion', 'carrot', 'cabbage', 'pepper', 'apple', 'garlic', 'herbs', 'parsley', 'dill']):
+        categories["🥬 Vegetables, greens"].append(ing)
+    elif any(x in ing.lower() for x in ['egg', 'milk', 'cottage cheese', 'sour cream', 'cheese', 'butter', 'kefir']):
+        categories["🥛 Dairy, eggs"].append(ing)
+    elif any(x in ing.lower() for x in ['sausage', 'chicken', 'minced meat', 'mince', 'bacon', 'frankfurter']):
+        categories["🍗 Meat, sausage, chicken, fish"].append(ing)
+    elif any(x in ing.lower() for x in ['flour', 'sugar', 'rice', 'buckwheat', 'pasta', 'semolina', 'baking powder', 'soda', 'vanillin', 'yeast', 'wheat']):
+        categories["🌾 Flour, cereals, groceries"].append(ing)
     else:
-        categories["🧂 Специи, масло, прочее"].append(ing)
+        categories["🧂 Spices, oil, etc."].append(ing) 
 
 # Убираем пустые категории
 categories = {k: v for k, v in categories.items() if v}
@@ -61,24 +61,26 @@ HTML = '''
         h1 {
             font-size: 2.2rem;
             background: rgba(60, 94, 43, 0.85);
-            -webkit-background-clip: text;
+            border: 5px solid #e68a2e;
             background-clip: text;
             color: #fef9e8;
-            display: inline-block;
+            display: flex;
             padding: 8px 24px;
             border-radius: 60px;
             backdrop-filter: blur(4px);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            inline-size: fit-content;
         }
-        .sub { 
+        .sub {
             color: #6b4c2c; margin-top: 6px;
             margin-top: 6px
             font-weight: 500;
             background: rgba(255, 255, 255, 0.85);
-            display: inline-block;
+            display: flex;
             padding: 6px 20px;
             border-radius: 40px;
             backdrop-filter: blur(4px);
+            inline-size: fit-content;
         }
 
         .stats-bar {
@@ -89,11 +91,12 @@ HTML = '''
             gap: 10px;
         }
         .selected-count {
-            background: #e9e0d0;
+            background: white;
             padding: 6px 12px;
             border-radius: 40px;
             font-size: 0.9rem;
             font-weight: 500;
+            opacity: 90%;
         }
         .reset-btn {
             background: #ffffff;
@@ -102,7 +105,7 @@ HTML = '''
             border-radius: 40px;
             cursor: pointer;
             font-size: 0.85rem;
-            
+            opacity: 90%;
         }
         .reset-btn:hover { background: #e9e0d0; }
         .category {
@@ -112,6 +115,7 @@ HTML = '''
             margin-bottom: 20px;
             border: 1px solid #f0e2d0;
         }
+
         .category-title {
             font-weight: 600;
             font-size: 1.2rem;
@@ -141,8 +145,16 @@ HTML = '''
             margin: 32px 0 16px 0;
             font-size: 1.5rem;
             font-weight: 600;
+            border: 5px solid white;
+            border-radius: 40px;
             border-left: 5px solid #e68a2e;
-            padding-left: 16px;
+            padding: 6px 15px;
+            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0px;
+            inline-size: fit-content;
+	        backdrop-filter: blur(10px);
+            color: white;
+            
         }
         .recipes-grid {
             display: grid;
@@ -238,7 +250,15 @@ HTML = '''
             text-align: center;
             margin-top: 48px;
             font-size: 0.7rem;
-            color: #aa8c6a;
+            color: white;
+            border: 1px solid white;
+            backdrop-filter: blur(10px);
+            display: grid;
+            justify-content: space-around;
+            inline-size: fit-content;
+            margin-inline: auto;
+            border-radius: 20px;
+            padding: 4px;
         }
     </style>
 </head>
@@ -246,18 +266,18 @@ HTML = '''
 <div class="container">
     <div class="header">
         <h1>🥘 Refrigerator Chef</h1>
-        <div class="sub">шеф по тому, что есть в холодильнике</div>
+        <div class="sub">Chef of what's in the fridge</div>
     </div>
     <div class="stats-bar">
-        <div class="selected-count" id="selectedCounter">✅ выбрано: 0 продуктов</div>
-        <button class="reset-btn" id="resetBtn">🗑️ сбросить всё</button>
+        <div class="selected-count" id="selectedCounter">✅ selected: 0 products</div>
+        <button class="reset-btn" id="resetBtn">🗑️ reset</button>
     </div>
 
     <div id="categoriesContainer"></div>
 
-    <div class="results-header">🍽️ что можно приготовить</div>
+    <div class="results-header">🍽️ What can you cook</div>
     <div id="recipesContainer" class="recipes-grid"></div>
-    <footer>Refrigerator Chef — выбери продукты, получи рецепты с учётом недостающих ингредиентов</footer>
+    <footer>Refrigerator Chef — Select products and get recipes that take into account the missing ingredients.</footer>
 </div>
 
 <script>
@@ -295,7 +315,7 @@ HTML = '''
     }
 
     function updateCounter() {
-        document.getElementById('selectedCounter').innerText = '✅ выбрано: ' + selectedIngredients.size + ' продуктов';
+        document.getElementById('selectedCounter').innerText = '✅ selected: ' + selectedIngredients.size + ' products';
     }
 
     function renderRecipes() {
@@ -336,7 +356,7 @@ HTML = '''
         });
         
         if (results.length === 0) {
-            container.innerHTML = '<div class="empty-state">😕 Ничего не найдено. Выберите больше продуктов.</div>';
+            container.innerHTML = '<div class="empty-state">😕 Nothing found. Please select more products.</div>';
             return;
         }
         
@@ -348,7 +368,7 @@ HTML = '''
                 missingSet.add(recipe.missing[m]);
             }
             
-            let ingHtml = '<div class="ingredients-list">📋 Ингредиенты:<br>';
+            let ingHtml = '<div class="ingredients-list">📋 Ingredients:<br>';
             for (let i = 0; i < recipe.ingredients.length; i++) {
                 const ing = recipe.ingredients[i];
                 const isMissing = missingSet.has(ing.toLowerCase().trim());
@@ -356,9 +376,9 @@ HTML = '''
             }
             ingHtml += '</div>';
             
-            const videoHtml = recipe.video ? '<a href="' + recipe.video + '" target="_blank" class="btn-video">🎬 Смотреть видео</a>' : '';
-            const timeHtml = recipe.time ? '<span class="recipe-time">⏱️ ' + recipe.time + ' мин</span>' : '';
-            const missingText = recipe.missing.length > 0 ? '<div style="font-size:0.75rem; color:#b13e2d; margin-bottom:12px;">⚠️ Не хватает: ' + recipe.missing.join(', ') + '</div>' : '<div style="font-size:0.75rem; color:#2f6b2f; margin-bottom:12px;">✅ У вас есть всё!</div>';
+            const videoHtml = recipe.video ? '<a href="' + recipe.video + '" target="_blank" class="btn-video">🎬 Watch video</a>' : '';
+            const timeHtml = recipe.time ? '<span class="recipe-time">⏱️ ' + recipe.time + ' min</span>' : '';
+            const missingText = recipe.missing.length > 0 ? '<div style="font-size:0.75rem; color:#b13e2d; margin-bottom:12px;">⚠️ required ingredients: ' + recipe.missing.join(', ') + '</div>' : '<div style="font-size:0.75rem; color:#2f6b2f; margin-bottom:12px;">✅ You have everything!</div>';
             
             const instrId = 'instr-' + idx;
             html += '<div class="recipe-card">';
@@ -367,11 +387,11 @@ HTML = '''
             html += ingHtml;
             html += missingText;
             html += '<div class="actions">';
-            html += '<button class="btn-instruction" data-idx="' + idx + '">📖 Показать инструкцию</button>';
+            html += '<button class="btn-instruction" data-idx="' + idx + '">📖 Show instructions</button>';
             html += videoHtml;
-            html += '<a href="' + recipe.link + '" target="_blank" class="btn-link">🔗 Оригинал</a>';
+            html += '<a href="' + recipe.link + '" target="_blank" class="btn-link">🔗 Original</a>';
             html += '</div>';
-            html += '<div id="' + instrId + '" class="instruction-text">' + (recipe.instructions || 'Инструкция не добавлена').replace(/\\n/g, '<br>') + '</div>';
+            html += '<div id="' + instrId + '" class="instruction-text">' + (recipe.instructions || 'Instruction not added').replace(/\\n/g, '<br>') + '</div>';
             html += '</div>';
         }
         container.innerHTML = html;
@@ -383,10 +403,10 @@ HTML = '''
                     const div = document.getElementById('instr-' + idx);
                     if (div.classList.contains('show')) {
                         div.classList.remove('show');
-                        btn.innerText = '📖 Показать инструкцию';
+                        btn.innerText = '📖 Show instructions';
                     } else {
                         div.classList.add('show');
-                        btn.innerText = '📖 Скрыть инструкцию';
+                        btn.innerText = '📖 Hide instructions';
                     }
                 });
             }
